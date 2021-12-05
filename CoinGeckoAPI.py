@@ -1,12 +1,11 @@
+# CLASS PART
 # import libraries
-import numpy as np
-import pandas as pd
-
+import numpy as np, pandas as pd
 from pycoingecko import CoinGeckoAPI
 cg = CoinGeckoAPI()
 
 # define CoinGeckoAPI class
-class CoinGeckoAPI():
+class CoinGeckoAPI(): 
     ''' Class to retrieve cryptocurrency data from CoinGeckoAPI 
     
     Attributes
@@ -46,7 +45,6 @@ class CoinGeckoAPI():
         
             
             
-
     '''
     
     def __init__(self, coin="bitcoin"):
@@ -113,3 +111,209 @@ class CoinGeckoAPI():
         return coin_id
         self.coin_id = coin_id
 
+    def get_mkt_data(self):
+        """ retrieves market data about the coin
+        """
+        mkt_data_df = pd.DataFrame(cg.get_coin_markets(vs_currency='usd'))
+        mkt_data_df = mkt_data_df.drop(columns=['name','image','roi','last_updated'], axis=1)
+        return mkt_data_df[mkt_data_df['id'] == self._coin]
+
+# coin list for program
+def coin_list():
+    # turn the coin dataframe into strings
+    global all_coins_list
+    all_coins_list = []
+    
+    for i in CoinGeckoAPI().get_coin_id().values.tolist():
+        for j in i:
+            all_coins_list.append(j)
+    return all_coins_list        
+coin_list()
+
+# test development 
+
+import sys
+import pyinputplus as pyip
+
+def launch_program():
+    print("Welcome to the CoinGecko API service!\n")
+    
+    global coin_choice
+    
+    while True:
+        response = pyip.inputYesNo(prompt="Do you know which coin you're looking for? (yes/no): \n")
+        
+        if response == "yes".lower() or response == "y".lower():
+                
+                coin_choice = input("Enter your coin here: \n")
+                if coin_choice in all_coins_list:
+                    
+                    data = CoinGeckoAPI(coin=coin_choice).data
+                    print("Here is a snippet of the data for %s:\n" % (coin_choice))
+                    return data
+                else:
+                    print("Error: Sorry, I couldn't find that coin in our list. Please verify and try again.\n")
+                    continue
+                    
+        elif response == "no".lower() or response == "n".lower():    
+                
+                # ask the user if they know the first letter of the coin they are looking for
+                
+                while True:
+                    char = input("What is the first character(s) of the coin you're looking for: \n")
+                    if char.isalnum() == False:
+                        print("Oops. I think you entered a special character. Please only enter letters or numbers.\n")
+                    elif char.isalnum() == True:
+                        
+                        print("*All coins in the coingecko database that start with " + "'" + char + "'" + ": \n")
+                        print("CoinGeckoAPI".center(50,"="))
+                            
+                        # iterates through the list to find all coins that start with the user's character
+                        for i in all_coins_list:
+                            if i.startswith(char):
+                                print(i)
+                                print("".center(50, "-"))
+                        print("".center(50, "="))
+                        print("*Note if you see an empty space, then the coin does not exist in the coingecko database.\n")
+                        
+
+                    question = pyip.inputYesNo(prompt="Do you see what you're looking for (yes/no)?: \n")
+                    if question == "yes".lower() or question == "y".lower():
+                        break
+                    elif question == "no".lower() or question == "n".lower():
+                        response = pyip.inputYesNo(prompt="Sorry about that. Did you want to look for another coin? (yes/no): \n")
+                        if response == "yes".lower() or question == "y".lower():
+                            continue
+                        elif response == "no".lower() or response == "n".lower():
+                            print("No problem. Have a great day! \n")
+                            sys.exit()
+
+                # now, the user will input the name to get the data of the coin they were searching for
+                response = input("Please enter the name of your coin here: \n")
+                if response not in all_coins_list:
+                    print("Error: Sorry, I couldn't find that coin in our list. Please verify and try again. \n")
+                    continue
+                    
+                else:
+                    coin_choice = response
+                    print(f"Here is a snippet of the data for {coin_choice}: \n")
+                    data = CoinGeckoAPI(coin=response).data
+                    return data
+                    break
+                    
+def slice_data(df):
+    while True:
+        print("The available data for " + coin_choice + " is from " + str(df.index[0])[0:10] + " to " + str(df.index[-1])[0:10] + ".\n")
+        global timeframe_start
+        timeframe_start = input("Where would you like your dataset to start? ('yyyy-mm-dd'): \n")
+        if timeframe_start in df.index:
+            break
+        else:
+            print("Sorry, you either inputted the date in the incorrect format or that timeframe isn't part of " + coin_choice + "'s dataset.\nPlease verify the start date and try again.\n")
+
+    while True:
+        global timeframe_end
+        timeframe_end = input("Where would you like your dataset to end? ('yyyy-mm-dd'): \n")
+        if timeframe_end in df.index:
+            if (timeframe_end[0:4] > timeframe_start[0:4]) or (timeframe_end[0:4] == timeframe_start[0:4] and timeframe_end[5:7] == timeframe_start[5:7] and timeframe_end[8:] >= timeframe_start[8:]) or (timeframe_end[0:4] == timeframe_start[0:4] and timeframe_end[5:7] > timeframe_start[5:7]):
+                break
+            else:
+                print("The end date you've entered is before the start date. Please try again.\n")
+                 
+        else:
+            print("Sorry, you either inputted the date in the incorrect format or that timeframe isn't part of " + coin_choice + "'s dataset.\nPlease verify the end date and try again.\n")
+    
+    global df_slice
+    df_slice = df.copy()
+    df_slice = df.loc[(df.index >= timeframe_start)&(df.index <= timeframe_end)]
+    print("Your sliced data has been saved in the variable df_slice.\n")
+    return df_slice
+    print(df_slice)                    
+
+import matplotlib.pyplot as plt
+
+def plot_data(x):
+        
+    choice = pyip.inputChoice(prompt="What plot would you like to visualize? (price, log returns, market cap, total volume)?: ",
+                         choices=["price", "log returns", "market cap", "total volume"])
+    
+    timeframe_start = str(df.index[0])[0:10]
+    timeframe_end = str(df.index[-1])[0:10]
+    
+    ylabel = ""
+    if choice == "price".lower():
+        x = x.price
+        ylabel = "price (usd)"
+        title = f"{coin_choice}'s price (usd) ({timeframe_start} to {timeframe_end})"
+        label = "price"
+        
+    elif choice == "log returns".lower():
+        x = x.log_returns
+        ylabel = "returns (%)"
+        title = f"{coin_choice}'s log returns (%) ({timeframe_start} to {timeframe_end})"
+        labe = "log returns"
+        
+    elif choice == "market cap".lower():
+        x = x.market_cap
+        ylabel = "market cap (usd)"
+        title = f"{coin_choice}'s market cap ({timeframe_start} to {timeframe_end})"
+        label = "market cap"
+        
+    elif choice == "total volume".lower():
+        x = x.total_volume
+        ylabel = "total volume"
+        title = f"{coin_choice}'s total volume ({timeframe_start} to {timeframe_end})"
+        label = "total volume"
+        
+    plt.figure(figsize=(8, 5), dpi=80)
+    plt.plot(x, label=label)
+
+    plt.title(title, fontsize=13)
+    plt.xlabel("Date", fontsize=11)
+    plt.ylabel(ylabel, fontsize=11)
+    plt.legend(loc="upper left")
+    
+    plt.show()
+    
+def visualize_data():
+    response = pyip.inputChoice(prompt="Would you like to visualize the entire dataset or the sliced dataset (entire dataset, sliced dataset): ",
+                               choices=["entire dataset", "sliced dataset"])
+    if response == "entire dataset":
+
+        plot_data(df)
+    elif response == "sliced dataset":
+        try:
+            plot_data(df_slice)
+        except NameError:
+            response = pyip.inputYesNo("No sliced dataset exists. Would you like to create a sliced dataset to visualize (yes/no)?: ")
+            if response == "yes".lower() or response == "y".lower():
+                slice_data(df)
+                plot_data(df_slice)
+            elif response == "no".lower() or response == "n".lower():
+                response = pyip.inputYesNo("Would you like to visualize the entire dataset (yes/no)?: ")
+                if response == "yes".lower() or response == "y".lower():
+                    plot_data(df)
+                elif response == "no".lower() or response == "n".lower():
+                    print("No problem. Change this if necessary later.")
+    
+df = launch_program()
+print(df, '\n')
+print("Your data has been stored in the variable df for any further data analysis. \n")
+
+while True:
+    response = pyip.inputYesNo(prompt="Would you like to perform additional operations on your data? (yes/no): ")
+    if response == "yes".lower() or response == "y".lower():
+        response = pyip.inputChoice(prompt="What operation would you like to perform? (slice data, visualize data, end program): ",
+                                    choices=["slice data", "visualize data", "end program"])
+        if response == "slice data":
+            df_slice = slice_data(df)
+        elif response == "visualize data":
+            visualize_data()
+        elif response == "end program":
+            print("The program that shows available options to the user will end here.\n")
+            break
+
+    elif response == "no".lower() or response == "n".lower():
+        print("This is the end so far. More logic here\n")
+        break
+print("Thank you for using the CoinGeckoApi program. We hope to see you soon!")
