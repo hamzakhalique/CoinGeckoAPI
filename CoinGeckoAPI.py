@@ -1,5 +1,4 @@
-# CLASS PART
-# import libraries
+# import libraries for class
 import numpy as np, pandas as pd
 from pycoingecko import CoinGeckoAPI
 cg = CoinGeckoAPI()
@@ -130,13 +129,21 @@ def coin_list():
     return all_coins_list        
 coin_list()
 
+# delay print 
+import time
+
+def delay_print(s, t):
+    for c in s:
+        sys.stdout.write(c)
+        sys.stdout.flush()
+        time.sleep(t)
+
 # test development 
 
 import sys
 import pyinputplus as pyip
 
 def launch_program():
-    print("Welcome to the CoinGecko API service!\n")
     
     global coin_choice
     
@@ -149,10 +156,10 @@ def launch_program():
                 if coin_choice in all_coins_list:
                     
                     data = CoinGeckoAPI(coin=coin_choice).data
-                    print("Here is a snippet of the data for %s:\n" % (coin_choice))
+                    print("Here is a snippet of the data for %s: \n" % (coin_choice))
                     return data
                 else:
-                    print("Error: Sorry, I couldn't find that coin in our list. Please verify and try again.\n")
+                    print("Error: Sorry, I couldn't find that coin in our list. Please verify and try again. \n")
                     continue
                     
         elif response == "no".lower() or response == "n".lower():    
@@ -162,7 +169,7 @@ def launch_program():
                 while True:
                     char = input("What is the first character(s) of the coin you're looking for: \n")
                     if char.isalnum() == False:
-                        print("Oops. I think you entered a special character. Please only enter letters or numbers.\n")
+                        print("Oops. I think you entered a special character. Please only enter letters or numbers. \n")
                     elif char.isalnum() == True:
                         
                         print("*All coins in the coingecko database that start with " + "'" + char + "'" + ": \n")
@@ -173,8 +180,8 @@ def launch_program():
                             if i.startswith(char):
                                 print(i)
                                 print("".center(50, "-"))
-                        print("".center(50, "="))
-                        print("*Note if you see an empty space, then the coin does not exist in the coingecko database.\n")
+                        print("".center(50,"="))
+                        print("*Note if you see an empty space, then the coin does not exist in the coingecko database. \n")
                         
 
                     question = pyip.inputYesNo(prompt="Do you see what you're looking for (yes/no)?: \n")
@@ -185,7 +192,7 @@ def launch_program():
                         if response == "yes".lower() or question == "y".lower():
                             continue
                         elif response == "no".lower() or response == "n".lower():
-                            print("No problem. Have a great day! \n")
+                            delay_print("No problem. Have a great day! \n", 0.0325)
                             sys.exit()
 
                 # now, the user will input the name to get the data of the coin they were searching for
@@ -203,13 +210,13 @@ def launch_program():
                     
 def slice_data(df):
     while True:
-        print("The available data for " + coin_choice + " is from " + str(df.index[0])[0:10] + " to " + str(df.index[-1])[0:10] + ".\n")
+        print("The available data for " + coin_choice + " is from " + str(df.index[0])[0:10] + " to " + str(df.index[-1])[0:10] + ". \n")
         global timeframe_start
         timeframe_start = input("Where would you like your dataset to start? ('yyyy-mm-dd'): \n")
         if timeframe_start in df.index:
             break
         else:
-            print("Sorry, you either inputted the date in the incorrect format or that timeframe isn't part of " + coin_choice + "'s dataset.\nPlease verify the start date and try again.\n")
+            print("Sorry, you either inputted the date in the incorrect format or that timeframe isn't part of " + coin_choice + "'s dataset.\nPlease verify the start date and try again. \n")
 
     while True:
         global timeframe_end
@@ -218,15 +225,15 @@ def slice_data(df):
             if (timeframe_end[0:4] > timeframe_start[0:4]) or (timeframe_end[0:4] == timeframe_start[0:4] and timeframe_end[5:7] == timeframe_start[5:7] and timeframe_end[8:] >= timeframe_start[8:]) or (timeframe_end[0:4] == timeframe_start[0:4] and timeframe_end[5:7] > timeframe_start[5:7]):
                 break
             else:
-                print("The end date you've entered is before the start date. Please try again.\n")
+                print("The end date you've entered is before the start date. Please try again. \n")
                  
         else:
-            print("Sorry, you either inputted the date in the incorrect format or that timeframe isn't part of " + coin_choice + "'s dataset.\nPlease verify the end date and try again.\n")
+            print("Sorry, you either inputted the date in the incorrect format or that timeframe isn't part of " + coin_choice + "'s dataset.\nPlease verify the end date and try again. \n")
     
     global df_slice
     df_slice = df.copy()
     df_slice = df.loc[(df.index >= timeframe_start)&(df.index <= timeframe_end)]
-    print("Your sliced data has been saved in the variable df_slice.\n")
+    print("Your sliced data has been saved in the variable df_slice. \n")
     return df_slice
     print(df_slice)                    
 
@@ -234,7 +241,7 @@ import matplotlib.pyplot as plt
 
 def plot_data(x):
         
-    choice = pyip.inputChoice(prompt="What plot would you like to visualize? (price, log returns, market cap, total volume)?: ",
+    choice = pyip.inputChoice(prompt="What plot would you like to visualize? (price, log returns, market cap, total volume)?: \n",
                          choices=["price", "log returns", "market cap", "total volume"])
     
     timeframe_start = str(df.index[0])[0:10]
@@ -251,7 +258,7 @@ def plot_data(x):
         x = x.log_returns
         ylabel = "returns (%)"
         title = f"{coin_choice}'s log returns (%) ({timeframe_start} to {timeframe_end})"
-        labe = "log returns"
+        label = "log returns"
         
     elif choice == "market cap".lower():
         x = x.market_cap
@@ -276,7 +283,7 @@ def plot_data(x):
     plt.show()
     
 def visualize_data():
-    response = pyip.inputChoice(prompt="Would you like to visualize the entire dataset or the sliced dataset (entire dataset, sliced dataset): ",
+    response = pyip.inputChoice(prompt="Would you like to visualize the entire dataset or the sliced dataset (entire dataset, sliced dataset): \n",
                                choices=["entire dataset", "sliced dataset"])
     if response == "entire dataset":
 
@@ -285,35 +292,49 @@ def visualize_data():
         try:
             plot_data(df_slice)
         except NameError:
-            response = pyip.inputYesNo("No sliced dataset exists. Would you like to create a sliced dataset to visualize (yes/no)?: ")
+            response = pyip.inputYesNo("No sliced dataset exists. Would you like to create a sliced dataset to visualize (yes/no)?: \n")
             if response == "yes".lower() or response == "y".lower():
                 slice_data(df)
                 plot_data(df_slice)
             elif response == "no".lower() or response == "n".lower():
-                response = pyip.inputYesNo("Would you like to visualize the entire dataset (yes/no)?: ")
+                response = pyip.inputYesNo("Would you like to visualize the entire dataset (yes/no)?: \n")
                 if response == "yes".lower() or response == "y".lower():
                     plot_data(df)
                 elif response == "no".lower() or response == "n".lower():
-                    print("No problem. Change this if necessary later.")
-    
+                    print("No problem. *Change this if necessary later.* \n")
+
+delay_print("Welcome to the CoinGecko API service!\n",0.0325)
 df = launch_program()
 print(df, '\n')
 print("Your data has been stored in the variable df for any further data analysis. \n")
 
 while True:
-    response = pyip.inputYesNo(prompt="Would you like to perform additional operations on your data? (yes/no): ")
+    response = pyip.inputYesNo(prompt="Would you like to perform additional operations on your data? (yes/no): \n")
     if response == "yes".lower() or response == "y".lower():
-        response = pyip.inputChoice(prompt="What operation would you like to perform? (slice data, visualize data, end program): ",
-                                    choices=["slice data", "visualize data", "end program"])
+        response = pyip.inputChoice(prompt="What operation would you like to perform? (slice data, visualize data, close program): \n",
+                                    choices=["slice data", "visualize data", "close program"])
         if response == "slice data":
             df_slice = slice_data(df)
         elif response == "visualize data":
             visualize_data()
-        elif response == "end program":
-            print("The program that shows available options to the user will end here.\n")
+        elif response == "close program":
+            delay_print("Please wait a few moments as we save your data: \n", 0.0325)
+            print("Saving Data".center(30,"="))
+            time.sleep(3)
+            delay_print("Your data as been saved! \n", 0.0325)
+            delay_print("Please wait a few moments as we close the program: \n".center(20,"="),0.0325)
+            print("Closing Program".center(30,"="))
+            time.sleep(3)
             break
-
+            
+    # can add more logic here later when necessary
     elif response == "no".lower() or response == "n".lower():
-        print("This is the end so far. More logic here\n")
+        delay_print("Please wait a few moments as we save your data: \n", 0.0325)
+        print("Saving Data".center(30,"="))
+        time.sleep(3)
+        delay_print("Your data as been saved! \n", 0.0325)
+        delay_print("Please wait a few moments as we close the program: \n".center(20,"="),0.0325)
+        print("Closing Program".center(30,"="))
+        time.sleep(3)
         break
-print("Thank you for using the CoinGeckoApi program. We hope to see you soon!")
+delay_print("Thank you for using the CoinGeckoApi program. Happy analyzing!",0.0325)
