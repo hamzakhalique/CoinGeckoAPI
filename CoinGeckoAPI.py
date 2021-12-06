@@ -1,4 +1,5 @@
-# import libraries for class
+# CLASS PART
+# import libraries
 import numpy as np, pandas as pd
 from pycoingecko import CoinGeckoAPI
 cg = CoinGeckoAPI()
