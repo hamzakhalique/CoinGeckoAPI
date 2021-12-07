@@ -306,8 +306,6 @@ def visualize_data():
 
 def export_data(x):
 
-    import pandas as pd
-
     date = []
     price = []
     log_returns = []
