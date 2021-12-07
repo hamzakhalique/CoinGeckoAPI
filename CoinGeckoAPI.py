@@ -304,6 +304,260 @@ def visualize_data():
                 elif response == "no".lower() or response == "n".lower():
                     print("No problem. *Change this if necessary later.* \n")
 
+def export_data(x):
+
+    import pandas as pd
+
+    date = []
+    price = []
+    log_returns = []
+    market_cap = []
+    total_volume = []
+
+    # create dates
+    for i in x.index:
+        date.append(str(i)[0:10])
+
+    for i in x.price:
+        price.append(i)
+
+    for i in x.log_returns:
+        log_returns.append(i)
+
+    for i in x.market_cap:
+        market_cap.append(i)
+
+    for i in x.total_volume:
+        total_volume.append(i)
+
+    export_dict = {
+        "date": date,
+        "price": price,
+        "log returns": log_returns,
+        "market cap": market_cap,
+        "total volume": total_volume
+    }
+
+    export_df = pd.DataFrame(export_dict)
+    return export_df                    
+                                     
+def csv_questions():
+    response = pyip.inputChoice(prompt="For your CSV file(s), would you like to export the entire dataset, sliced dataset or both? (entire dataset, sliced dataset, both) \n",
+                                    choices=["entire dataset", "sliced dataset", "both"])
+    # export entire dataset
+    if response == "entire dataset".lower():
+        delay_print("What would you like to name your csv file (entire dataset): \n", 0.0325)
+        csv_name_entire = input()
+        delay_print("Okay. Please wait a moment as we export your data to csv format: \n",0.0325)
+        export_df = export_data(df)
+        print("Exporting to CSV".center(30,"="))
+        time.sleep(1.5)
+        export_df.to_csv(csv_name_entire+".csv", index=False)
+        delay_print(f"Your data has been saved as: {csv_name_entire}.csv \n",0.0325)
+    
+    # export sliced dataset
+    elif response == "sliced dataset".lower():
+        delay_print("What would you like to name your csv file (sliced dataset): \n", 0.0325)
+        csv_name_sliced = input()
+        try:
+            delay_print("Okay. Please wait a moment as we export your data to csv format: \n",0.0325)
+            export_df_slice = export_data(df_slice)
+            print("Exporting to CSV".center(30,"="))
+            time.sleep(1.5)
+            export_df_slice.to_csv(csv_name_sliced+".csv", index=False)
+            delay_print(f"Your data has been saved as: {csv_name_sliced}.csv \n",0.0325)
+        except NameError:
+            response = pyip.inputYesNo("No sliced dataset exists. Would you like to create a sliced dataset to export (yes/no)?: \n")
+            if response == "yes".lower() or response == "y".lower():
+                slice_data(df)
+                delay_print("Okay. Please wait a moment as we export your data to csv format: \n",0.0325)
+                export_df_slice = export_data(df_slice)
+                print("Exporting to CSV".center(30,"="))
+                time.sleep(1.5)
+                export_df_slice.to_csv(csv_name_sliced+".csv", index=False)
+                delay_print(f"Your data has been saved as: {csv_name_sliced}.csv \n",0.0325)
+            elif response == "no".lower() or response == "n".lower():
+                response = pyip.inputYesNo("Would you like to export the entire dataset instead (yes/no)?: \n")
+                if response == "yes".lower() or response == "y".lower():
+                    delay_print("What would you like to name your csv file (entire dataset): \n", 0.0325)
+                    csv_name_entire = input()
+                    delay_print("Okay. Please wait a moment as we export your data to csv format: \n",0.0325)
+                    export_df = export_data(df)
+                    print("Exporting to CSV".center(30,"="))
+                    time.sleep(1.5)
+                    export_df.to_csv(csv_name_entire+".csv", index=False)
+                    delay_print(f"Your data has been saved as: {csv_name_entire}.csv \n",0.0325)
+                elif response == "no".lower() or response == "n".lower():
+                    print("No problem. *Change this if necessary later.* \n")
+    
+    # export both the entire dataset and sliced dataset
+    elif response == "both".lower():
+        
+        # saving the entire dataset
+        delay_print("What would you like to name your csv file (entire dataset): \n", 0.0325)
+        csv_name_entire = input()
+        delay_print("Okay. Please wait a moment as we export your data to csv format: \n",0.0325)
+        export_df = export_data(df)
+        print("Exporting to CSV".center(30,"="))
+        time.sleep(1.5)
+        export_df.to_csv(csv_name_entire+".csv", index=False)
+        delay_print(f"Your data has been saved as: {csv_name_entire}.csv \n",0.0325)
+        
+        # saving the sliced dataset
+        delay_print("What would you like to name your csv file (sliced dataset): \n", 0.0325)
+        csv_name_sliced = input()
+        try:
+            delay_print("Okay. Please wait a moment as we export your data to csv format: \n",0.0325)
+            export_df_slice = export_data(df_slice)
+            print("Exporting to CSV".center(30,"="))
+            export_df_slice.to_csv(csv_name_sliced+".csv", index=False)
+            time.sleep(1.5)
+            delay_print(f"Your data has been saved as: {csv_name_sliced}.csv \n",0.0325)
+        except NameError:
+            response = pyip.inputYesNo("No sliced dataset exists. Would you like to create a sliced dataset to export (yes/no)?: \n")
+            if response == "yes".lower() or response == "y".lower():
+                slice_data(df)
+                delay_print("Okay. Please wait a moment as we export your data to csv format: \n",0.0325)
+                export_df_slice = export_data(df_slice)
+                print("Exporting to CSV".center(30,"="))
+                time.sleep(1.5)
+                export_df_slice.to_csv(csv_name_sliced+".csv", index=False)
+                delay_print(f"Your data has been saved as: {csv_name_sliced}.csv \n",0.0325)
+            elif response == "no".lower() or response == "n".lower():
+                response = pyip.inputYesNo("Would you like to export the entire dataset instead (yes/no)?: \n")
+                if response == "yes".lower() or response == "y".lower():
+                    delay_print("What would you like to name your csv file (entire dataset): \n", 0.0325)
+                    csv_name_entire = input()
+                    delay_print("Okay. Please wait a moment as we export your data to csv format: \n",0.0325)
+                    export_df = export_data(df)
+                    print("Exporting to CSV".center(30,"="))
+                    time.sleep(1.5)
+                    export_df.to_csv(csv_name_entire+".csv", index=False)
+                    delay_print(f"Your data has been saved as: {csv_name_entire}.csv \n",0.0325)
+                elif response == "no".lower() or response == "n".lower():
+                    print("No problem. *Change this if necessary later.* \n")
+
+def xlsx_questions():
+    response = pyip.inputChoice(prompt="For your xlsx file(s), would you like to export the entire dataset, sliced dataset or both? (entire dataset, sliced dataset, both) \n",
+                                    choices=["entire dataset", "sliced dataset", "both"])
+    # export entire dataset
+    if response == "entire dataset".lower():
+        delay_print("What would you like to name your xlsx file (entire dataset): \n", 0.0325)
+        xlsx_name_entire = input()
+        delay_print("Okay. Please wait a moment as we export your data to xlsx format: \n",0.0325)
+        export_df = export_data(df)
+        print("Exporting to XLSX".center(30,"="))
+        time.sleep(1.5)
+        export_df.to_excel(xlsx_name_entire+".xlsx", index=False)
+        # remember to change it so the name is show: your data has been saved to 'filename.xlxs'
+        delay_print(f"Your data has been saved as: {xlsx_name_entire}.xlsx \n",0.0325)
+    
+    # export sliced dataset
+    elif response == "sliced dataset".lower():
+        delay_print("What would you like to name your xlsx file (sliced dataset): \n",0.0325)
+        xlsx_name_sliced = input()
+        try:
+            delay_print("Okay. Please wait a moment as we export your data to xlsx format: \n",0.0325)
+            export_df_slice = export_data(df_slice)
+            print("Exporting to XLSX".center(30,"="))
+            time.sleep(1.5)
+            export_df_slice.to_excel(xlsx_name_sliced+".xlsx", index=False)
+            delay_print(f"Your data has been saved as: {xlsx_name_sliced}.xlsx \n",0.0325)
+        except NameError:
+            response = pyip.inputYesNo("No sliced dataset exists. Would you like to create a sliced dataset to export (yes/no)?: \n")
+            if response == "yes".lower() or response == "y".lower():
+                slice_data(df)
+                delay_print("Okay. Please wait a moment as we export your data to xlsx format: \n",0.0325)
+                export_df_slice = export_data(df_slice)
+                print("Exporting to XLSX".center(30,"="))
+                time.sleep(1.5)
+                export_df_slice.to_excel(xlsx_name_sliced+".xlsx", index=False)
+                delay_print(f"Your data has been saved as: {xlsx_name_sliced}.xlsx \n",0.0325)
+            elif response == "no".lower() or response == "n".lower():
+                response = pyip.inputYesNo("Would you like to export the entire dataset instead (yes/no)?: \n")
+                if response == "yes".lower() or response == "y".lower():
+                    delay_print("What would you like to name your xlsx file (entire dataset): \n", 0.0325)
+                    xlsx_name_entire = input()
+                    delay_print("Okay. Please wait a moment as we export your data to xlsx format: \n",0.0325)
+                    export_df = export_data(df)
+                    print("Exporting to XLSX".center(30,"="))
+                    time.sleep(1.5)
+                    export_df.to_excel(xlsx_name_entire+".xlsx", index=False)
+                    # remember to change it so the name is show: your data has been saved to 'filename.xlxs'
+                    delay_print(f"Your data has been saved as: {xlsx_name_entire}.xlsx \n",0.0325)
+                elif response == "no".lower() or response == "n".lower():
+                    print("No problem. *Change this if necessary later.* \n")
+    
+    # export both the entire dataset and sliced dataset
+    elif response == "both".lower():
+        
+        # saving the entire dataset
+        delay_print("What would you like to name your xlsx file (entire dataset): \n", 0.0325)
+        xlsx_name_entire = input()
+        delay_print("Okay. Please wait a moment as we export your data to xlsx format: \n",0.0325)
+        export_df = export_data(df)
+        print("Exporting to XLSX".center(30,"="))
+        time.sleep(1.5)
+        export_df.to_excel(xlsx_name_entire+".xlsx", index=False)
+        # remember to change it so the name is show: your data has been saved to 'filename.xlxs'
+        delay_print(f"Your data has been saved as: {xlsx_name_entire}.xlsx \n",0.0325)
+        
+        # saving the sliced dataset
+        delay_print("What would you like to name your xlsx file (sliced dataset): \n",0.0325)
+        xlsx_name_sliced = input()
+        try:
+            delay_print("Okay. Please wait a moment as we export your data to xlsx format: \n",0.0325)
+            export_df_slice = export_data(df_slice)
+            print("Exporting to XLSX".center(30,"="))
+            time.sleep(1.5)
+            export_df_slice.to_excel(xlsx_name_sliced+".xlsx", index=False)
+            delay_print(f"Your data has been saved as: {xlsx_name_sliced}.xlsx \n",0.0325)
+        except NameError:
+            response = pyip.inputYesNo("No sliced dataset exists. Would you like to create a sliced dataset to export (yes/no)?: \n")
+            if response == "yes".lower() or response == "y".lower():
+                slice_data(df)
+                delay_print("Okay. Please wait a moment as we export your data to xlsx format: \n",0.0325)
+                export_df_slice = export_data(df_slice)
+                print("Exporting to XLSX".center(30,"="))
+                time.sleep(1.5)
+                export_df_slice.to_excel(xlsx_name_sliced+".xlsx", index=False)
+                delay_print(f"Your data has been saved as: {xlsx_name_sliced}.xlsx \n",0.0325)
+            elif response == "no".lower() or response == "n".lower():
+                response = pyip.inputYesNo("Would you like to export the entire dataset instead (yes/no)?: \n")
+                if response == "yes".lower() or response == "y".lower():
+                    delay_print("What would you like to name your xlsx file (entire dataset): \n", 0.0325)
+                    csv_name_entire = input()
+                    delay_print("Okay. Please wait a moment as we export your data to xlsx format: \n",0.0325)
+                    export_df = export_data(df)
+                    print("Exporting to XLSX".center(30,"="))
+                    time.sleep(1.5)
+                    export_df.to_excel(xlsx_name_entire+".xlsx", index=False)
+                    delay_print(f"Your data has been saved as: {xlsx_name_entire}.xlsx \n",0.0325)
+                elif response == "no".lower() or response == "n".lower():
+                    print("No problem. *Change this if necessary later.* \n")
+
+def export_data_questions():
+    global csv_name_entire
+    global csv_name_sliced
+    global xlsx_name_entire
+    global xlsx_name_sliced
+    
+    delay_print("Would you like to export your data as a csv or xlsx file? (yes/no): \n",0.0325)
+    response = pyip.inputYesNo()
+    if response == "yes".lower() or response == "y".lower():
+        response = pyip.inputChoice(prompt="Which format would you like? (csv, xlsx, both) \n",
+                                   choices=["csv", "xlsx", "both"])
+        if response == "csv".lower():
+            csv_questions()
+        elif response == "xlsx".lower():
+            xlsx_questions()
+        elif response == "both".lower():
+            csv_questions()
+            xlsx_questions()
+            
+    elif response == "no".lower() or response == "n".lower():
+        delay_print("Okay, no problem.",0.0325)
+
 delay_print("Welcome to the CoinGecko API service!\n",0.0325)
 df = launch_program()
 print(df, '\n')
@@ -323,6 +577,7 @@ while True:
             print("Saving Data".center(30,"="))
             time.sleep(3)
             delay_print("Your data as been saved! \n", 0.0325)
+            export_data_questions()
             delay_print("Please wait a few moments as we close the program: \n".center(20,"="),0.0325)
             print("Closing Program".center(30,"="))
             time.sleep(3)
@@ -333,7 +588,8 @@ while True:
         delay_print("Please wait a few moments as we save your data: \n", 0.0325)
         print("Saving Data".center(30,"="))
         time.sleep(3)
-        delay_print("Your data as been saved! \n", 0.0325)
+        delay_print("Your data has been saved! \n", 0.0325)
+        export_data_questions()
         delay_print("Please wait a few moments as we close the program: \n".center(20,"="),0.0325)
         print("Closing Program".center(30,"="))
         time.sleep(3)
