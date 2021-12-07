@@ -1,3 +1,4 @@
+# CLASS PART
 # import libraries
 import numpy as np, pandas as pd
 from pycoingecko import CoinGeckoAPI
@@ -251,25 +252,25 @@ def plot_data(x):
     if choice == "price".lower():
         x = x.price
         ylabel = "price (usd)"
-        title = f"{coin_choice}'s price (usd) ({timeframe_start} to {timeframe_end})"
+        title = f"{coin_choice}'s price (usd): ({timeframe_start} to {timeframe_end})"
         label = "price"
         
     elif choice == "log returns".lower():
         x = x.log_returns
         ylabel = "returns (%)"
-        title = f"{coin_choice}'s log returns (%) ({timeframe_start} to {timeframe_end})"
+        title = f"{coin_choice}'s log returns (%): ({timeframe_start} to {timeframe_end})"
         label = "log returns"
         
     elif choice == "market cap".lower():
         x = x.market_cap
         ylabel = "market cap (usd)"
-        title = f"{coin_choice}'s market cap ({timeframe_start} to {timeframe_end})"
+        title = f"{coin_choice}'s market cap: ({timeframe_start} to {timeframe_end})"
         label = "market cap"
         
     elif choice == "total volume".lower():
         x = x.total_volume
         ylabel = "total volume"
-        title = f"{coin_choice}'s total volume ({timeframe_start} to {timeframe_end})"
+        title = f"{coin_choice}'s total volume: ({timeframe_start} to {timeframe_end})"
         label = "total volume"
         
     plt.figure(figsize=(8, 5), dpi=80)
@@ -279,6 +280,7 @@ def plot_data(x):
     plt.xlabel("Date", fontsize=11)
     plt.ylabel(ylabel, fontsize=11)
     plt.legend(loc="upper left")
+    plt.xticks(rotation=45)
     
     plt.show()
     
