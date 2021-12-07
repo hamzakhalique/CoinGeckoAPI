@@ -1,4 +1,3 @@
-# CLASS PART
 # import libraries
 import numpy as np, pandas as pd
 from pycoingecko import CoinGeckoAPI
@@ -306,6 +305,8 @@ def visualize_data():
 
 def export_data(x):
 
+    import pandas as pd
+
     date = []
     price = []
     log_returns = []
@@ -386,7 +387,7 @@ def csv_questions():
                     export_df.to_csv(csv_name_entire+".csv", index=False)
                     delay_print(f"Your data has been saved as: {csv_name_entire}.csv \n",0.0325)
                 elif response == "no".lower() or response == "n".lower():
-                    print("No problem. *Change this if necessary later.* \n")
+                    print("No problem. Change this if necessary later. \n")
     
     # export both the entire dataset and sliced dataset
     elif response == "both".lower():
@@ -433,7 +434,7 @@ def csv_questions():
                     export_df.to_csv(csv_name_entire+".csv", index=False)
                     delay_print(f"Your data has been saved as: {csv_name_entire}.csv \n",0.0325)
                 elif response == "no".lower() or response == "n".lower():
-                    print("No problem. *Change this if necessary later.* \n")
+                    print("No problem. Change this if necessary later. \n")
 
 def xlsx_questions():
     response = pyip.inputChoice(prompt="For your xlsx file(s), would you like to export the entire dataset, sliced dataset or both? (entire dataset, sliced dataset, both) \n",
@@ -484,7 +485,7 @@ def xlsx_questions():
                     # remember to change it so the name is show: your data has been saved to 'filename.xlxs'
                     delay_print(f"Your data has been saved as: {xlsx_name_entire}.xlsx \n",0.0325)
                 elif response == "no".lower() or response == "n".lower():
-                    print("No problem. *Change this if necessary later.* \n")
+                    print("No problem. Change this if necessary later. \n")
     
     # export both the entire dataset and sliced dataset
     elif response == "both".lower():
@@ -532,7 +533,7 @@ def xlsx_questions():
                     export_df.to_excel(xlsx_name_entire+".xlsx", index=False)
                     delay_print(f"Your data has been saved as: {xlsx_name_entire}.xlsx \n",0.0325)
                 elif response == "no".lower() or response == "n".lower():
-                    print("No problem. *Change this if necessary later.* \n")
+                    print("No problem. Change this if necessary later. \n")
 
 def export_data_questions():
     global csv_name_entire
@@ -554,7 +555,7 @@ def export_data_questions():
             xlsx_questions()
             
     elif response == "no".lower() or response == "n".lower():
-        delay_print("Okay, no problem.",0.0325)
+        delay_print("Okay, no problem. \n",0.0325)
 
 delay_print("Welcome to the CoinGecko API service!\n",0.0325)
 df = launch_program()
