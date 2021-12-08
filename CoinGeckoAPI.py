@@ -245,32 +245,29 @@ def plot_data(x):
     choice = pyip.inputChoice(prompt="What plot would you like to visualize? (price, log returns, market cap, total volume)?: \n",
                          choices=["price", "log returns", "market cap", "total volume"])
     
-    timeframe_start = str(df.index[0])[0:10]
-    timeframe_end = str(df.index[-1])[0:10]
-    
     ylabel = ""
     if choice == "price".lower():
         x = x.price
         ylabel = "price (usd)"
-        title = f"{coin_choice}'s price (usd): ({timeframe_start} to {timeframe_end})"
+        title = f"{coin_choice}'s price (usd): ({timeframe_start_plot} to {timeframe_end_plot})"
         label = "price"
         
     elif choice == "log returns".lower():
         x = x.log_returns
         ylabel = "returns (%)"
-        title = f"{coin_choice}'s log returns (%): ({timeframe_start} to {timeframe_end})"
+        title = f"{coin_choice}'s log returns (%): ({timeframe_start_plot} to {timeframe_end_plot})"
         label = "log returns"
         
     elif choice == "market cap".lower():
         x = x.market_cap
         ylabel = "market cap (usd)"
-        title = f"{coin_choice}'s market cap: ({timeframe_start} to {timeframe_end})"
+        title = f"{coin_choice}'s market cap: ({timeframe_start_plot} to {timeframe_end_plot})"
         label = "market cap"
         
     elif choice == "total volume".lower():
         x = x.total_volume
         ylabel = "total volume"
-        title = f"{coin_choice}'s total volume: ({timeframe_start} to {timeframe_end})"
+        title = f"{coin_choice}'s total volume: ({timeframe_start_plot} to {timeframe_end_plot})"
         label = "total volume"
         
     plt.figure(figsize=(8, 5), dpi=80)
@@ -285,18 +282,28 @@ def plot_data(x):
     plt.show()
     
 def visualize_data():
+    
+    global timeframe_start_plot
+    global timeframe_end_plot
+
     response = pyip.inputChoice(prompt="Would you like to visualize the entire dataset or the sliced dataset (entire dataset, sliced dataset): \n",
                                choices=["entire dataset", "sliced dataset"])
     if response == "entire dataset":
-
+        timeframe_start_plot = str(df.index[0])[0:10]
+        timeframe_end_plot = str(df.index[-1])[0:10]
         plot_data(df)
     elif response == "sliced dataset":
         try:
+            timeframe_start_plot = str(df_slice.index[0])[0:10]
+            timeframe_end_plot = str(df_slice.index[-1])[0:10]
+
             plot_data(df_slice)
         except NameError:
             response = pyip.inputYesNo("No sliced dataset exists. Would you like to create a sliced dataset to visualize (yes/no)?: \n")
             if response == "yes".lower() or response == "y".lower():
                 slice_data(df)
+                timeframe_start_plot = str(df_slice.index[0])[0:10]
+                timeframe_end_plot = str(df_slice.index[-1])[0:10]
                 plot_data(df_slice)
             elif response == "no".lower() or response == "n".lower():
                 response = pyip.inputYesNo("Would you like to visualize the entire dataset (yes/no)?: \n")
